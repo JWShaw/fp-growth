@@ -11,14 +11,15 @@ import java.util.Collections;
 
 public class FPTree {
 
-    private double minSupNum;   // Number of occurrences of a "frequent" item
+    private double minSupNum;   
+    private TreeNode root;
     private ArrayList<HeaderTableEntry> headerTable = new ArrayList<>();
 
     public FPTree() {
         this.headerTable = new ArrayList<>();
+        root = new TreeNode(-1);
     }
 
-    // Turns this table into the L1 table given the database file
     public void generateGlobalTree(File f, double minSupPercent) throws FileNotFoundException {
 
         Scanner sc1 = new Scanner(f);
@@ -27,13 +28,10 @@ public class FPTree {
 
         HashMap<Integer, Integer> supportTable = new HashMap<>();
 
-        // Creates and populates the L1 table
         while (sc1.hasNextInt()) {
             sc1.nextInt();
             int numItems = sc1.nextInt();
 
-            /* For each item, hash a 1-element set containing that item with
-            the number of times that item has occurred in the database */
             for (int i = 0; i < numItems; i++) {
 
                 Integer item = new Integer(sc1.nextInt());
@@ -41,8 +39,6 @@ public class FPTree {
                 if (supportTable.get(item) == null) {
                     supportTable.put(item, 1);
                 } else {
-                    /* Increments the count of the set if it has already been 
-                    encountered */
                     int occurrences = supportTable.get(item);
                     supportTable.replace(item, ++occurrences);
                 }
@@ -70,12 +66,43 @@ public class FPTree {
                 transactionSet.add(sc2.nextInt());
             }
 
+            TreeNode n = this.root;
             for (HeaderTableEntry ent : headerTable) {
                 if (transactionSet.contains(ent.item())) {
-                    this.add(ent.item());
+                    n = this.add(ent, n);
                 }
             }     
         }
         sc2.close();
+    }
+
+    // Adds a node to the tree.  Return the newly-added node.
+    private TreeNode add(HeaderTableEntry entry, TreeNode node) {
+        if (node.hasChild(entry.item())) {
+            node = node.incrementChild(entry.item());
+        } else {
+            node = node.addChild(entry.item());
+            entry.treenodes.add(node);
+        }
+        return node;
+    }
+
+    public TreeNode getRoot() {
+        return root;
+    }
+
+    public String toString() {
+        String result = "";
+        for (HeaderTableEntry ent : headerTable) {
+            result += ent.toString() + ent.treenodes.toString() + "\n";
+        }
+        return result;
+    }
+
+    public void preorder(TreeNode node) {
+        System.out.print(node);
+        for (TreeNode child : node.children.values()) {
+            preorder(child);
+        }
     }
 }

@@ -1,4 +1,3 @@
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
@@ -17,8 +16,8 @@ public class FPGrowth {
 
         try {
             FPTree tre = new FPTree();
-            tre.generateGlobalHeaderTree(f, minsup);
-
+            tre.generateGlobalTree(f, minsup);
+            System.out.print(tre);
         } catch (IOException ioe) {
             System.out.print(ioe);
             System.exit(0);

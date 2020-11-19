@@ -1,13 +1,18 @@
+import java.util.ArrayList;
+
 public class HeaderTableEntry implements Comparable<HeaderTableEntry>{
 
     private int item;
     private int support;
+
+    ArrayList<TreeNode> treenodes;
     
     // Also need to add list of attached tree nodes
 
     public HeaderTableEntry(int item, int support) {
         this.item = item;
         this.support = support;
+        this.treenodes = new ArrayList<>();
     }
 
     public int item() {
