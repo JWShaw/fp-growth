@@ -1,38 +1,75 @@
 import java.util.HashMap;
+import java.util.Collection;
 
-class TreeNode {
 
-    HashMap<Integer, TreeNode> children;
-    int item;
-    int occurrences;
+public class TreeNode {
 
-    TreeNode(int item) {
+    private TreeNode parent;
+    private HashMap<Integer, TreeNode> children;
+    private int item;
+    private int support;
+
+    public TreeNode(int item, TreeNode parent) {
+        this.parent = parent;
         children = new HashMap<>();
         this.item = item;
-        occurrences = 1;
+        support = 1;
     }
 
-    TreeNode addChild(int item) {
-        TreeNode childNode = new TreeNode(item);
+    public void addChild(int item) {
+        TreeNode childNode = new TreeNode(item, this);
         children.put(item, childNode);
-        return childNode;
     }
 
-    TreeNode incrementChild(int item) {
-        TreeNode child = children.get(item);
-        child.occurrences++;
-        return child;
+    public int item() {
+        return item;
     }
 
-    boolean hasChild(int item) {
+    public TreeNode getChild(int item) {
+        return children.get(item);
+    }
+
+    public TreeNode getOnlyChild() {
+        if (children.size() == 1) {
+            return children.values().iterator().next();
+        }
+        return null;
+    }
+
+    public TreeNode getParent() {
+        return parent;
+    }
+
+    public void incrementSupport() {
+        support++;
+    }
+
+    public boolean hasChild(int item) {
         return children.get(item) != null;
     }
 
-    boolean isLeaf() {
-        return children.isEmpty();
+    public boolean hasChild() {
+        return children.size() != 0;
+    }
+
+    public boolean hasParent() {
+        return parent != null;
+    }
+    
+    public void setParent(TreeNode node) {
+        parent = node;
+        node.children.put(this.item, this);
+    }
+
+    public boolean hasGrandparent() {
+        return parent.getParent() != null;
     }
 
     public String toString() {
-        return "[" + item + "," + occurrences + "]";
+        return "[" + item + "," + support + "]";
+    }
+
+    public Collection<TreeNode> children() {
+        return children.values();
     }
 }
