@@ -6,6 +6,7 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
+// The header table for the FP-trees.  Most methods are self-documenting.
 public class HeaderTable implements Iterable<Integer> {
 
     private HashMap<Integer, HeaderTableEntry> data;
@@ -18,22 +19,40 @@ public class HeaderTable implements Iterable<Integer> {
         data.put(item, new HeaderTableEntry(item, 1));
     }
 
+    // Adds an item to the table, or increments its support appropriately
+    // if the item entry already exists in the table.
+    public void add(int item, int supp) {
+        if (data.get(item) == null) {
+            data.put(item, new HeaderTableEntry(item, supp));
+        } else {
+            data.get(item).support += supp;
+        }
+    }
+
     public void remove(int item) {
         data.remove(item);
     }
 
     public int getSupport(int item) {
+        if (!this.contains(item)) {
+            return 0;
+        }
         return data.get(item).support;
     }
 
+    // Adds one to the support of an item
     public void incrementSupport(int item) {
         data.get(item).support++;
     }
 
+    // Adds a hyperlink to a given TreeNode to the
+    // appropriate table entry
     public void addReference(TreeNode node) {
         data.get(node.item()).treenodes.add(node);
     }
 
+    // Returns a collection of all nodes in a tree corresponding
+    // to a particular item.
     public Collection<TreeNode> getNodes(int item) {
         return data.get(item).treenodes;
     }
@@ -65,30 +84,16 @@ public class HeaderTable implements Iterable<Integer> {
         return result;
     }
 
-    public Iterator<Integer> backwardsIterator() {
-        List<HeaderTableEntry> itemList = new ArrayList(data.values());
-        Collections.sort(itemList, new Comparator<HeaderTableEntry>() {
-            public int compare(HeaderTableEntry a, HeaderTableEntry b) 
-            { 
-                return a.support - b.support;
-            } 
-        });
-
-        Iterator<Integer> result = new Iterator<>() {
-            Iterator<HeaderTableEntry> inner = itemList.iterator();
-
-            public boolean hasNext() {
-                return inner.hasNext();
-            }
-
-            public Integer next() {
-                return inner.next().item;
-            }
-        };
-
+    @Override
+    public String toString() {
+        String result = "";
+        for (int item : this) {
+            result += item + "," + getSupport(item) + "\n";
+        }
         return result;
     }
 
+    // Internal table entry class
     class HeaderTableEntry implements Comparable<HeaderTableEntry> {
 
         int item;

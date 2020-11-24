@@ -15,8 +15,10 @@ public class FPGrowth {
         PrintWriter outfile = new PrintWriter("MiningResult.txt");
 
         try {
-            FPTree tre = new FPTree(f, minsup);
-            tre.doCoolStuff();
+            FPTree globalTree = new FPTree(f, minsup);
+            globalTree.generateProjectedTrees();
+            System.out.println("|FPs| = " + globalTree.numFrequentPatterns());
+            System.out.print(globalTree.miningResults());
         } catch (IOException ioe) {
             System.out.print(ioe);
             System.exit(0);

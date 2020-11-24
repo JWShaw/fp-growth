@@ -1,7 +1,8 @@
 import java.util.HashMap;
 import java.util.Collection;
 
-
+// The node class of which the FP Tree is composed.
+// All functions were are self-documenting.
 public class TreeNode {
 
     private TreeNode parent;
@@ -16,60 +17,42 @@ public class TreeNode {
         support = 1;
     }
 
-    public void addChild(int item) {
-        TreeNode childNode = new TreeNode(item, this);
-        children.put(item, childNode);
+    public TreeNode(int item, TreeNode parent, int support) {
+        this(item, parent);
+        this.support = support;
     }
 
     public int item() {
         return item;
     }
 
+    public void incrementSupport(int amount) {
+        support += amount;
+    }
+
+    public int getSupport() {
+        return support;
+    }
+
+    // Adds a (deep copy) of a node as a child to this node
+    public void addChild(int item, int support) {
+        TreeNode childNode = new TreeNode(item, this, support);
+        children.put(item, childNode);
+    }
+
     public TreeNode getChild(int item) {
         return children.get(item);
-    }
-
-    public TreeNode getOnlyChild() {
-        if (children.size() == 1) {
-            return children.values().iterator().next();
-        }
-        return null;
-    }
-
-    public TreeNode getParent() {
-        return parent;
-    }
-
-    public void incrementSupport() {
-        support++;
     }
 
     public boolean hasChild(int item) {
         return children.get(item) != null;
     }
 
-    public boolean hasChild() {
-        return children.size() != 0;
+    public TreeNode getParent() {
+        return parent;
     }
 
     public boolean hasParent() {
         return parent != null;
-    }
-    
-    public void setParent(TreeNode node) {
-        parent = node;
-        node.children.put(this.item, this);
-    }
-
-    public boolean hasGrandparent() {
-        return parent.getParent() != null;
-    }
-
-    public String toString() {
-        return "[" + item + "," + support + "]";
-    }
-
-    public Collection<TreeNode> children() {
-        return children.values();
     }
 }
