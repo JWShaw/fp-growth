@@ -96,6 +96,7 @@ public class FPTree {
             ArrayList<Pair<LinkedList<Integer>,Integer>> branches = new ArrayList<>();
 
             // Generate the linear "branches" to add to the new tree
+            // (and construct its header table)
             for (TreeNode n : headerTable.getNodes(entry)) {
                 TreeNode visit = n.getParent();
                 LinkedList<Integer> newBranch = new LinkedList();
@@ -116,7 +117,8 @@ public class FPTree {
             }
 
             /* Add each linear "branch" to the tree
-             * (only add the node if the minimum support threshold is satisfied) */
+             * (only add the node if the minimum support threshold is satisfied
+                in the header table) */
             for (Pair<LinkedList<Integer>,Integer> p : branches) {
                 TreeNode addAt = newTree.root;
                 for (Integer item : p.item1) {
@@ -132,7 +134,7 @@ public class FPTree {
 
     /* Returns a string representation of the mining results.
      * To be called on the global FP-tree. */
-    public String miningResults() {
+    public String miningResult() {
         String result = "";
         if (headerTable.size() == 0) {
             return "";
@@ -146,7 +148,7 @@ public class FPTree {
             }
         }
         for (FPTree tree : projectedTrees) {
-            result += tree.miningResults();
+            result += tree.miningResult();
         }
         return result;
     }
@@ -183,5 +185,4 @@ public class FPTree {
             return newborn;
         }
     }
-
 }

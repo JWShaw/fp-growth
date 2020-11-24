@@ -15,10 +15,21 @@ public class FPGrowth {
         PrintWriter outfile = new PrintWriter("MiningResult.txt");
 
         try {
+            // Generate the global FP-tree
             FPTree globalTree = new FPTree(f, minsup);
+
+            // Recursively build every projected FP-tree
             globalTree.generateProjectedTrees();
-            System.out.println("|FPs| = " + globalTree.numFrequentPatterns());
-            System.out.print(globalTree.miningResults());
+
+            // Obtain results by recursively tracing through every projected tree
+            int numFrequentPatterns = globalTree.numFrequentPatterns();
+            String miningResult = globalTree.miningResult();
+
+            // Print to standard out and to output file as per assignment specification
+            System.out.println("|FPs| = " + numFrequentPatterns);
+            outfile.println("|FPs| = " + numFrequentPatterns);
+            outfile.print(miningResult);
+
         } catch (IOException ioe) {
             System.out.print(ioe);
             System.exit(0);
