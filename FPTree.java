@@ -42,9 +42,10 @@ public class FPTree {
             sc1.nextInt();
             int numItems = sc1.nextInt();
 
+            // Populates the header table with a transaction
             for (int i = 0; i < numItems; i++) {
 
-                Integer item = new Integer(sc1.nextInt());
+                int item = sc1.nextInt();
 
                 if (!headerTable.contains(item)) {
                     headerTable.add(item);
@@ -56,7 +57,7 @@ public class FPTree {
         sc1.close();
 
         // Prunes infrequent items from the header table
-        for (Integer item : headerTable) {
+        for (int item : headerTable) {
             if (headerTable.getSupport(item) < minSupNum)
                 headerTable.remove(item);
         }
@@ -74,10 +75,11 @@ public class FPTree {
                 transactionSet.add(sc2.nextInt());
             }
 
+            // Add only the frequent items to the tree
             TreeNode leaf = this.root;
-            for (Integer item : headerTable) {
+            for (int item : headerTable) {
                 if (transactionSet.contains(item)) {
-                    leaf = this.addLeaf(item, 1, leaf);
+                    leaf = this.addNode(item, 1, leaf);
                 }
             }     
         }
@@ -87,7 +89,7 @@ public class FPTree {
     // Generates all the projected trees for this tree
     public void generateProjectedTrees() {
 
-        for (Integer entry : headerTable) {
+        for (int entry : headerTable) {
             FPTree newTree = new FPTree(this.minSupNum);
             newTree.prefix = new ArrayList(this.prefix);
             newTree.prefix.add(entry);
@@ -111,7 +113,7 @@ public class FPTree {
             }
             
             // Prune infrequent items from new tree's header table
-            for (Integer item : newTree.headerTable) {
+            for (int item : newTree.headerTable) {
                 if (newTree.headerTable.getSupport(item) < minSupNum)
                     newTree.headerTable.remove(item);
             }
@@ -121,9 +123,9 @@ public class FPTree {
                 in the header table) */
             for (Pair<LinkedList<Integer>,Integer> p : branches) {
                 TreeNode addAt = newTree.root;
-                for (Integer item : p.item1) {
+                for (int item : p.item1) {
                     if (newTree.headerTable.getSupport(item) >= minSupNum) {
-                        addAt = newTree.addLeaf(item, p.item2, addAt);
+                        addAt = newTree.addNode(item, p.item2, addAt);
                     }
                 }
             }
@@ -173,7 +175,7 @@ public class FPTree {
     /* Adds a new leaf to the tree, or increments the existing one with
      * the same item.  Return the newly-added leaf
      * Used when building FP-trees. */
-    private TreeNode addLeaf(int item, int support, TreeNode parent) {
+    private TreeNode addNode(int item, int support, TreeNode parent) {
         if (parent.hasChild(item)) {
             TreeNode childNode = parent.getChild(item);
             childNode.incrementSupport(support);
